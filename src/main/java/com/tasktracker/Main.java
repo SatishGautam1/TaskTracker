@@ -14,6 +14,9 @@ import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+
 public class Main extends Application {
 
     private final TaskService taskService = new TaskService();
@@ -49,7 +52,19 @@ public class Main extends Application {
 
     private VBox createHeader() {
 
+        Image logoImage = new Image(
+            getClass()
+                    .getResourceAsStream("/tasktracker-logo.png")
+        );
+
+        ImageView logo = new ImageView(logoImage);
+
+        logo.setFitWidth(48);
+        logo.setFitHeight(48);
+        logo.setPreserveRatio(true);
+
         Label title = new Label("Task Tracker");
+
         title.setStyle(
                 "-fx-font-size: 26px;" +
                 "-fx-font-weight: bold;"
@@ -61,7 +76,20 @@ public class Main extends Application {
                 "-fx-font-size: 13px;"
         );
 
-        VBox header = new VBox(4, title, subtitle);
+        HBox titleRow = new HBox(
+                12,
+                logo,
+                title
+        );
+
+        titleRow.setAlignment(Pos.CENTER_LEFT);
+
+        VBox header = new VBox(
+                4,
+                titleRow,
+                subtitle
+        );
+        
         header.setPadding(new Insets(20));
         header.setStyle(
                 "-fx-background-color: white;" +
