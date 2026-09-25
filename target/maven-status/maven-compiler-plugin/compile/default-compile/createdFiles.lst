@@ -1,0 +1,6 @@
+com\tasktracker\Main$TaskCell.class
+com\tasktracker\service\TaskService.class
+com\tasktracker\model\Priority.class
+com\tasktracker\model\TaskStatus.class
+com\tasktracker\Main.class
+com\tasktracker\model\Task.class
