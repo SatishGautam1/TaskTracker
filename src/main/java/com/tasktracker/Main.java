@@ -298,6 +298,95 @@ public class Main extends Application {
         });
     }
 
+    private void showEditTaskDialog(Task task) {
+
+        Dialog<Void> dialog = new Dialog<>();
+
+        dialog.setTitle("Edit Task");
+        dialog.setHeaderText("Edit task details");
+
+        ButtonType saveButton =
+                new ButtonType(
+                        "Save",
+                        ButtonBar.ButtonData.OK_DONE
+                );
+
+        dialog.getDialogPane()
+                .getButtonTypes()
+                .addAll(
+                        saveButton,
+                        ButtonType.CANCEL
+                );
+
+        TextField subjectField =
+                new TextField(task.getSubject());
+
+        TextArea bodyArea =
+                new TextArea(task.getBody());
+
+        bodyArea.setPrefRowCount(8);
+
+        ComboBox<com.tasktracker.model.Priority> priorityBox =
+                new ComboBox<>(
+                        FXCollections.observableArrayList(
+                                com.tasktracker.model.Priority.values()
+                        )
+                );
+
+        priorityBox.setValue(task.getPriority());
+
+        VBox content =
+                new VBox(
+                        10,
+                        new Label("Subject"),
+                        subjectField,
+                        new Label("Description"),
+                        bodyArea,
+                        new Label("Priority"),
+                        priorityBox
+                );
+
+        content.setPadding(new Insets(10));
+
+        dialog.getDialogPane()
+                .setContent(content);
+
+        dialog.setResultConverter(button -> {
+
+            if (button == saveButton) {
+
+                String subject =
+                        subjectField.getText().trim();
+
+                String body =
+                        bodyArea.getText().trim();
+
+                if (!subject.isEmpty()) {
+
+                    taskService.updateTask(
+                            task.getId(),
+                            subject,
+                            body
+                    );
+
+                    task.setPriority(
+                            priorityBox.getValue()
+                    );
+
+                    refreshTasks(
+                            taskService.getAllTasks()
+                    );
+
+                    updateDashboard();
+                }
+            }
+
+            return null;
+        });
+
+        dialog.showAndWait();
+    }
+
     private void refreshTasks(
             java.util.List<Task> tasks
     ) {
@@ -391,6 +480,9 @@ public class Main extends Application {
                                     : "Flag"
                     );
 
+            Button editButton =
+                    new Button("Edit");
+
             Button deleteButton =
                     new Button("Delete");
 
@@ -416,6 +508,8 @@ public class Main extends Application {
 
                 updateDashboard();
             });
+
+            editButton.setOnAction(e -> showEditTaskDialog(task));
 
             flagButton.setOnAction(e -> {
 
@@ -446,6 +540,7 @@ public class Main extends Application {
                             8,
                             completeButton,
                             flagButton,
+                            editButton,
                             deleteButton
                     );
 
@@ -464,6 +559,7 @@ public class Main extends Application {
             );
 
             setGraphic(information);
+
         }
     }
 
