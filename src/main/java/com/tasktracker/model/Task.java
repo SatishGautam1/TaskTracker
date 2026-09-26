@@ -1,6 +1,9 @@
 package com.tasktracker.model;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Task {
 
@@ -12,6 +15,7 @@ public class Task {
     private Priority priority;
 
     private boolean flagged;
+    private List<String> tags = new ArrayList<>();
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
@@ -90,6 +94,15 @@ public class Task {
         touch();
     }
 
+    public List<String> getTags() {
+        return tags;
+    }
+
+    public void setTags(List<String> tags) {
+        this.tags = tags == null ? new ArrayList<>() : new ArrayList<>(tags);
+        touch();
+    }
+
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
@@ -135,6 +148,26 @@ public class Task {
         this.completedAt = null;
         this.pendingSince = LocalDateTime.now();
         touch();
+    }
+
+    /**
+     * A task is overdue only while it is still pending; a completed task
+     * is never overdue even if it was finished after its due date.
+     */
+    public boolean isOverdue() {
+        return dueDate != null
+                && status == TaskStatus.PENDING
+                && dueDate.isBefore(LocalDateTime.now());
+    }
+
+    public boolean isDueToday() {
+        if (dueDate == null || status == TaskStatus.COMPLETED) {
+            return false;
+        }
+
+        LocalDate today = LocalDate.now();
+
+        return dueDate.toLocalDate().isEqual(today);
     }
 
     private void touch() {

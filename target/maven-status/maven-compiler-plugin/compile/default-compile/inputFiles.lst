@@ -2,5 +2,12 @@ C:\Users\SHADOW\Documents\TaskTracker\src\main\java\com\tasktracker\Main.java
 C:\Users\SHADOW\Documents\TaskTracker\src\main\java\com\tasktracker\model\Priority.java
 C:\Users\SHADOW\Documents\TaskTracker\src\main\java\com\tasktracker\model\Task.java
 C:\Users\SHADOW\Documents\TaskTracker\src\main\java\com\tasktracker\model\TaskStatus.java
+C:\Users\SHADOW\Documents\TaskTracker\src\main\java\com\tasktracker\service\FilterType.java
 C:\Users\SHADOW\Documents\TaskTracker\src\main\java\com\tasktracker\service\TaskService.java
+C:\Users\SHADOW\Documents\TaskTracker\src\main\java\com\tasktracker\ui\DashboardPanel.java
 C:\Users\SHADOW\Documents\TaskTracker\src\main\java\com\tasktracker\ui\MarkdownEditor.java
+C:\Users\SHADOW\Documents\TaskTracker\src\main\java\com\tasktracker\ui\SidebarPanel.java
+C:\Users\SHADOW\Documents\TaskTracker\src\main\java\com\tasktracker\ui\TaskCard.java
+C:\Users\SHADOW\Documents\TaskTracker\src\main\java\com\tasktracker\ui\TaskEditorDialog.java
+C:\Users\SHADOW\Documents\TaskTracker\src\main\java\com\tasktracker\ui\TaskFormData.java
+C:\Users\SHADOW\Documents\TaskTracker\src\main\java\com\tasktracker\util\DateTimeUtil.java

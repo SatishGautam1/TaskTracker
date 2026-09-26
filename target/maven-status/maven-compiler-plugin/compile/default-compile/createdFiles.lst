@@ -1,7 +1,14 @@
-com\tasktracker\Main$TaskCell.class
+com\tasktracker\service\FilterType.class
+com\tasktracker\ui\TaskEditorDialog.class
+com\tasktracker\ui\TaskFormData.class
 com\tasktracker\service\TaskService.class
 com\tasktracker\model\Priority.class
 com\tasktracker\ui\MarkdownEditor.class
+com\tasktracker\util\DateTimeUtil.class
+com\tasktracker\service\TaskService$1.class
 com\tasktracker\Main.class
 com\tasktracker\model\Task.class
+com\tasktracker\ui\TaskCard.class
 com\tasktracker\model\TaskStatus.class
+com\tasktracker\ui\DashboardPanel.class
+com\tasktracker\ui\SidebarPanel.class

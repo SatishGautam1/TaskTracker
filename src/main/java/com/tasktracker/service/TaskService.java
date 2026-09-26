@@ -5,16 +5,23 @@ import com.tasktracker.model.TaskStatus;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
 
 public class TaskService {
 
     private final List<Task> tasks = new ArrayList<>();
 
+    // Monotonically increasing counter. The previous implementation scanned
+    // the whole list on every insert (O(n) per add, and it also reused an id
+    // after every task with that id had been deleted). A counter is O(1)
+    // and ids are never reused.
+    private final AtomicLong idGenerator = new AtomicLong(0);
+
     public Task addTask(String subject, String body) {
 
         Task task = new Task(subject, body);
 
-        task.setId(generateId());
+        task.setId(idGenerator.incrementAndGet());
 
         tasks.add(task);
 
@@ -113,22 +120,81 @@ public class TaskService {
             return getAllTasks();
         }
 
-        String searchText =
-                query.trim().toLowerCase();
+        String searchText = query.trim().toLowerCase();
 
         return tasks.stream()
-                .filter(task ->
-                        containsIgnoreCase(
-                                task.getSubject(),
-                                searchText
-                        )
-                        ||
-                        containsIgnoreCase(
-                                task.getBody(),
-                                searchText
-                        )
-                )
+                .filter(task -> matches(task, searchText))
                 .toList();
+    }
+
+    public List<Task> getPendingTasks() {
+
+        return tasks.stream()
+                .filter(task -> task.getStatus() == TaskStatus.PENDING)
+                .toList();
+    }
+
+    public List<Task> getCompletedTasks() {
+
+        return tasks.stream()
+                .filter(task -> task.getStatus() == TaskStatus.COMPLETED)
+                .toList();
+    }
+
+    public List<Task> getFlaggedTasks() {
+
+        return tasks.stream()
+                .filter(Task::isFlagged)
+                .toList();
+    }
+
+    public List<Task> getOverdueTasks() {
+
+        return tasks.stream()
+                .filter(Task::isOverdue)
+                .toList();
+    }
+
+    public List<Task> getDueTodayTasks() {
+
+        return tasks.stream()
+                .filter(Task::isDueToday)
+                .toList();
+    }
+
+    /**
+     * Applies a sidebar filter and a free-text search together, so the two
+     * never have to be combined ad-hoc in the UI layer (the previous UI
+     * duplicated this "which list, then filter by text" logic).
+     */
+    public List<Task> getTasks(FilterType filter, String query) {
+
+        List<Task> base = switch (filter) {
+            case ALL -> getAllTasks();
+            case PENDING -> getPendingTasks();
+            case COMPLETED -> getCompletedTasks();
+            case FLAGGED -> getFlaggedTasks();
+            case OVERDUE -> getOverdueTasks();
+            case DUE_TODAY -> getDueTodayTasks();
+        };
+
+        if (query == null || query.isBlank()) {
+            return base;
+        }
+
+        String searchText = query.trim().toLowerCase();
+
+        return base.stream()
+                .filter(task -> matches(task, searchText))
+                .toList();
+    }
+
+    private boolean matches(Task task, String searchText) {
+
+        return containsIgnoreCase(task.getSubject(), searchText)
+                || containsIgnoreCase(task.getBody(), searchText)
+                || task.getTags().stream()
+                        .anyMatch(tag -> containsIgnoreCase(tag, searchText));
     }
 
     private boolean containsIgnoreCase(
@@ -140,42 +206,6 @@ public class TaskService {
             return false;
         }
 
-        return text.toLowerCase()
-                .contains(searchText);
-    }
-
-    public List<Task> getPendingTasks() {
-
-        return tasks.stream()
-                .filter(task ->
-                        task.getStatus()
-                                == TaskStatus.PENDING
-                )
-                .toList();
-    }
-
-    public List<Task> getCompletedTasks() {
-
-        return tasks.stream()
-                .filter(task ->
-                        task.getStatus()
-                                == TaskStatus.COMPLETED
-                )
-                .toList();
-    }
-
-    public List<Task> getFlaggedTasks() {
-
-        return tasks.stream()
-                .filter(Task::isFlagged)
-                .toList();
-    }
-
-    private long generateId() {
-
-        return tasks.stream()
-                .mapToLong(Task::getId)
-                .max()
-                .orElse(0) + 1;
+        return text.toLowerCase().contains(searchText);
     }
 }
