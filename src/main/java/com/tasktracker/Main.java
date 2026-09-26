@@ -45,6 +45,13 @@ public class Main extends Application {
 
         Scene scene = new Scene(root, 1100, 700);
 
+        Image appIcon = new Image(
+                getClass()
+                        .getResourceAsStream("/tasktracker-logo.png")
+        );
+
+        stage.getIcons().add(appIcon);
+
         stage.setTitle("Task Tracker");
         stage.setScene(scene);
         stage.show();
