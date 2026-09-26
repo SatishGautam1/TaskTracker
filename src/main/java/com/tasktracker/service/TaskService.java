@@ -11,9 +11,13 @@ public class TaskService {
     private final List<Task> tasks = new ArrayList<>();
 
     public Task addTask(String subject, String body) {
+
         Task task = new Task(subject, body);
+
         task.setId(generateId());
+
         tasks.add(task);
+
         return task;
     }
 
@@ -22,15 +26,23 @@ public class TaskService {
     }
 
     public Task getTaskById(long id) {
+
         for (Task task : tasks) {
+
             if (task.getId() == id) {
                 return task;
             }
         }
+
         return null;
     }
 
-    public boolean updateTask(long id, String subject, String body) {
+    public boolean updateTask(
+            long id,
+            String subject,
+            String body
+    ) {
+
         Task task = getTaskById(id);
 
         if (task == null) {
@@ -44,6 +56,7 @@ public class TaskService {
     }
 
     public boolean deleteTask(long id) {
+
         Task task = getTaskById(id);
 
         if (task == null) {
@@ -54,6 +67,7 @@ public class TaskService {
     }
 
     public boolean completeTask(long id) {
+
         Task task = getTaskById(id);
 
         if (task == null) {
@@ -61,10 +75,12 @@ public class TaskService {
         }
 
         task.complete();
+
         return true;
     }
 
     public boolean reopenTask(long id) {
+
         Task task = getTaskById(id);
 
         if (task == null) {
@@ -72,17 +88,22 @@ public class TaskService {
         }
 
         task.reopen();
+
         return true;
     }
 
     public boolean toggleFlag(long id) {
+
         Task task = getTaskById(id);
 
         if (task == null) {
             return false;
         }
 
-        task.setFlagged(!task.isFlagged());
+        task.setFlagged(
+                !task.isFlagged()
+        );
+
         return true;
     }
 
@@ -92,29 +113,66 @@ public class TaskService {
             return getAllTasks();
         }
 
-        String searchText = query.toLowerCase();
+        String searchText =
+                query.trim().toLowerCase();
 
         return tasks.stream()
                 .filter(task ->
-                        task.getSubject().toLowerCase().contains(searchText)
-                        || task.getBody().toLowerCase().contains(searchText)
+                        containsIgnoreCase(
+                                task.getSubject(),
+                                searchText
+                        )
+                        ||
+                        containsIgnoreCase(
+                                task.getBody(),
+                                searchText
+                        )
                 )
                 .toList();
     }
 
+    private boolean containsIgnoreCase(
+            String text,
+            String searchText
+    ) {
+
+        if (text == null) {
+            return false;
+        }
+
+        return text.toLowerCase()
+                .contains(searchText);
+    }
+
     public List<Task> getPendingTasks() {
+
         return tasks.stream()
-                .filter(task -> task.getStatus() == TaskStatus.PENDING)
+                .filter(task ->
+                        task.getStatus()
+                                == TaskStatus.PENDING
+                )
                 .toList();
     }
 
     public List<Task> getCompletedTasks() {
+
         return tasks.stream()
-                .filter(task -> task.getStatus() == TaskStatus.COMPLETED)
+                .filter(task ->
+                        task.getStatus()
+                                == TaskStatus.COMPLETED
+                )
+                .toList();
+    }
+
+    public List<Task> getFlaggedTasks() {
+
+        return tasks.stream()
+                .filter(Task::isFlagged)
                 .toList();
     }
 
     private long generateId() {
+
         return tasks.stream()
                 .mapToLong(Task::getId)
                 .max()
