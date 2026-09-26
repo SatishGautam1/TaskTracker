@@ -36,6 +36,7 @@ public class Main extends Application {
     private final ObservableList<Task> visibleTasks = FXCollections.observableArrayList();
     private final ListView<Task> taskListView = new ListView<>();
     private final TextField searchField = new TextField();
+    private final Label emptyStateLabel = new Label();
 
     private SidebarPanel sidebarPanel;
 
@@ -141,20 +142,18 @@ public class Main extends Application {
         taskListView.getStyleClass().add("task-list");
 
         taskListView.setCellFactory(list -> new TaskCard(
-                task -> {
-                    toggleComplete(task);
-                },
+                this::toggleComplete,
                 task -> {
                     taskService.toggleFlag(task.getId());
                     refresh();
                 },
                 this::openEditor,
-                this::deleteTask
+                this::confirmDelete,
+                this::performDelete
         ));
 
-        Label emptyState = new Label("No tasks here yet.");
-        emptyState.getStyleClass().add("empty-state");
-        taskListView.setPlaceholder(emptyState);
+        emptyStateLabel.getStyleClass().add("empty-state");
+        taskListView.setPlaceholder(emptyStateLabel);
 
         VBox area = new VBox(15, toolbar, taskListView);
         area.setPadding(new Insets(20));
@@ -202,7 +201,14 @@ public class Main extends Application {
         refresh();
     }
 
-    private void deleteTask(Task task) {
+    /**
+     * Only asks the question - it never mutates task data itself. This is
+     * called by {@link com.tasktracker.ui.TaskCard} before its delete
+     * animation starts, so the confirmation dialog is never nested inside an
+     * animation's finished-handler (see the comment on TaskCard's delete
+     * button for why that ordering matters).
+     */
+    private boolean confirmDelete(Task task) {
 
         Alert confirmation = new Alert(Alert.AlertType.CONFIRMATION);
         confirmation.setTitle("Delete Task");
@@ -211,19 +217,49 @@ public class Main extends Application {
 
         ButtonType result = confirmation.showAndWait().orElse(ButtonType.CANCEL);
 
-        if (result == ButtonType.OK) {
-            taskService.deleteTask(task.getId());
-            refresh();
-        }
+        return result == ButtonType.OK;
+    }
+
+    /**
+     * Performs the actual removal, once the caller has already confirmed and
+     * (if applicable) let any deletion animation finish.
+     */
+    private void performDelete(Task task) {
+        taskService.deleteTask(task.getId());
+        refresh();
     }
 
     private void refresh() {
 
         sidebarPanel.getDashboardPanel().update(taskService);
+        sidebarPanel.updateCounts(taskService);
 
         visibleTasks.setAll(
                 taskService.getTasks(currentFilter, searchField.getText())
         );
+
+        emptyStateLabel.setText(emptyStateMessage());
+    }
+
+    private String emptyStateMessage() {
+
+        boolean noTasksAtAll = taskService.getAllTasks().isEmpty();
+
+        if (noTasksAtAll) {
+            return "No tasks yet — create your first task to get started.";
+        }
+
+        String query = searchField.getText();
+
+        if (query != null && !query.isBlank()) {
+            return "No tasks match \"" + query.trim() + "\".";
+        }
+
+        if (currentFilter != FilterType.ALL) {
+            return "No tasks in this filter right now.";
+        }
+
+        return "No tasks here yet.";
     }
 
     public static void main(String[] args) {

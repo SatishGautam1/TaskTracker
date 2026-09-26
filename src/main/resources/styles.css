@@ -1,0 +1,336 @@
+/* Task Tracker - application stylesheet
+ * Keeps colors and spacing centralized so the desktop UI reads as one
+ * coherent product rather than a set of default JavaFX controls.
+ */
+
+.root {
+    -fx-font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    -fx-font-size: 13px;
+    -fx-background-color: #f4f5f8;
+
+    /* Design tokens. JavaFX CSS has no custom-property syntax, but any
+     * -fx-* value defined here is a "looked-up color/value" that descendant
+     * rules can reference by name below - this is what keeps the palette
+     * and radii consistent instead of repeating literals everywhere. */
+    -fx-color-primary: #2563eb;
+    -fx-color-primary-dark: #1d4ed8;
+    -fx-color-danger: #c0362c;
+    -fx-color-danger-bg: #fde4e4;
+    -fx-color-success: #1f8a41;
+    -fx-color-success-bg: #e2f5e6;
+    -fx-color-warning: #b06a00;
+    -fx-color-warning-bg: #fdf1d6;
+    -fx-color-text: #1f2430;
+    -fx-color-text-muted: #5b6472;
+    -fx-color-text-faint: #9098a8;
+    -fx-color-border: #e6e8ee;
+    -fx-radius-sm: 6;
+    -fx-radius-md: 8;
+    -fx-radius-lg: 10;
+}
+
+/* ---------- Header ---------- */
+
+.app-header {
+    -fx-background-color: white;
+    -fx-border-color: #e2e4ea;
+    -fx-border-width: 0 0 1 0;
+}
+
+.app-title {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1f2430;
+}
+
+.app-subtitle {
+    -fx-text-fill: #7a8194;
+    -fx-font-size: 12.5px;
+}
+
+/* ---------- Sidebar ---------- */
+
+.sidebar {
+    -fx-background-color: #fbfbfd;
+    -fx-border-color: #e2e4ea;
+    -fx-border-width: 0 1 0 0;
+}
+
+.panel-heading {
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #9098a8;
+}
+
+.stat-card {
+    -fx-background-color: white;
+    -fx-background-radius: 8;
+    -fx-border-color: #e6e8ee;
+    -fx-border-radius: 8;
+}
+
+.stat-title {
+    -fx-font-size: 10.5px;
+    -fx-text-fill: #9098a8;
+    -fx-font-weight: bold;
+}
+
+.stat-value {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1f2430;
+}
+
+.completion-bar .bar {
+    -fx-background-color: #2563eb;
+    -fx-background-radius: 6;
+}
+
+.completion-bar .track {
+    -fx-background-color: #e6e8ee;
+    -fx-background-radius: 6;
+}
+
+.nav-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #414a5c;
+    -fx-alignment: CENTER_LEFT;
+    -fx-padding: 9 12 9 12;
+    -fx-background-radius: 6;
+    -fx-cursor: hand;
+}
+
+.nav-button:hover {
+    -fx-background-color: #eef1fa;
+}
+
+.nav-button:focused {
+    -fx-border-color: #2563eb;
+    -fx-border-radius: 6;
+}
+
+.nav-button-selected {
+    -fx-background-color: #e4ebfd;
+    -fx-font-weight: bold;
+}
+
+.nav-button-selected .nav-button-label {
+    -fx-text-fill: -fx-color-primary-dark;
+}
+
+.nav-button-label {
+    -fx-text-fill: #414a5c;
+}
+
+.nav-button-count {
+    -fx-text-fill: -fx-color-text-faint;
+    -fx-font-size: 11px;
+    -fx-padding: 1 7 1 7;
+    -fx-background-color: #eef0f4;
+    -fx-background-radius: 10;
+}
+
+.nav-button-selected .nav-button-count {
+    -fx-text-fill: white;
+    -fx-background-color: -fx-color-primary;
+}
+
+/* ---------- Task area ---------- */
+
+.search-field {
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+    -fx-border-color: #dfe2ea;
+    -fx-padding: 8 12 8 12;
+}
+
+.search-field:focused {
+    -fx-border-color: #2563eb;
+}
+
+.primary-button {
+    -fx-background-color: -fx-color-primary;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: -fx-radius-md;
+    -fx-padding: 9 16 9 16;
+    -fx-cursor: hand;
+}
+
+.primary-button:hover {
+    -fx-background-color: -fx-color-primary-dark;
+}
+
+.primary-button:pressed {
+    -fx-background-color: #1740a8;
+}
+
+.task-list {
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+}
+
+.task-list .list-cell {
+    -fx-background-color: transparent;
+    -fx-padding: 0 0 12 0;
+}
+
+.empty-state {
+    -fx-text-fill: -fx-color-text-faint;
+    -fx-font-size: 14px;
+    -fx-text-alignment: center;
+    -fx-wrap-text: true;
+    -fx-padding: 40 20 40 20;
+}
+
+/* ---------- Task card ---------- */
+
+.task-card {
+    -fx-background-color: white;
+    -fx-background-radius: 10;
+    -fx-border-color: #e6e8ee;
+    -fx-border-radius: 10;
+    -fx-effect: dropshadow(gaussian, rgba(31,36,48,0.06), 6, 0, 0, 1);
+}
+
+/* .task-card-hover is toggled from code in lockstep with the small
+ * TranslateTransition lift on mouse enter/exit, so the elevated shadow
+ * animates in sync with the movement rather than snapping instantly the
+ * way a plain CSS :hover swap would. */
+.task-card-hover {
+    -fx-border-color: #c7d2f5;
+    -fx-effect: dropshadow(gaussian, rgba(31,36,48,0.14), 14, 0, 0, 4);
+}
+
+.task-card-completed {
+    -fx-opacity: 0.7;
+}
+
+.task-card-overdue {
+    -fx-border-color: #f2a4a4;
+    -fx-border-width: 1.4;
+}
+
+.task-card-due-today {
+    -fx-border-color: #f3c26b;
+    -fx-border-width: 1.4;
+}
+
+.task-subject {
+    -fx-font-size: 15px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1f2430;
+}
+
+.task-body-preview {
+    -fx-text-fill: #5b6472;
+    -fx-font-size: 12.5px;
+}
+
+.task-meta {
+    -fx-text-fill: #9098a8;
+    -fx-font-size: 11.5px;
+}
+
+.flag-indicator {
+    -fx-text-fill: #e0a80f;
+}
+
+.chip {
+    -fx-padding: 2 8 2 8;
+    -fx-background-radius: 12;
+    -fx-font-size: 10.5px;
+    -fx-font-weight: bold;
+}
+
+.priority-high {
+    -fx-background-color: -fx-color-danger-bg;
+    -fx-text-fill: -fx-color-danger;
+}
+
+.priority-medium {
+    -fx-background-color: -fx-color-warning-bg;
+    -fx-text-fill: -fx-color-warning;
+}
+
+.priority-low {
+    -fx-background-color: -fx-color-success-bg;
+    -fx-text-fill: -fx-color-success;
+}
+
+.status-pending {
+    -fx-background-color: #eef1fa;
+    -fx-text-fill: #414a5c;
+}
+
+.status-completed {
+    -fx-background-color: -fx-color-success-bg;
+    -fx-text-fill: -fx-color-success;
+}
+
+.tag-chip {
+    -fx-background-color: #f1f2f6;
+    -fx-text-fill: #5b6472;
+    -fx-padding: 2 8 2 8;
+    -fx-background-radius: 10;
+    -fx-font-size: 10.5px;
+}
+
+.secondary-button {
+    -fx-background-color: #f1f2f6;
+    -fx-text-fill: #414a5c;
+    -fx-background-radius: 6;
+    -fx-padding: 6 12 6 12;
+    -fx-cursor: hand;
+    -fx-font-size: 11.5px;
+}
+
+.secondary-button:hover {
+    -fx-background-color: #e6e8ee;
+}
+
+.danger-button:hover {
+    -fx-background-color: -fx-color-danger-bg;
+    -fx-text-fill: -fx-color-danger;
+}
+
+/* ---------- Markdown editor ---------- */
+
+.markdown-toolbar {
+    -fx-background-color: #f5f6f8;
+    -fx-border-color: #e2e4ea;
+    -fx-border-width: 0 0 1 0;
+}
+
+.toolbar-button {
+    -fx-background-color: white;
+    -fx-border-color: #dfe2ea;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+    -fx-cursor: hand;
+}
+
+.toolbar-button:hover {
+    -fx-background-color: #eef1fa;
+}
+
+.markdown-section-label {
+    -fx-font-weight: bold;
+    -fx-background-color: #eeeeee;
+}
+
+/* ---------- Dialogs ---------- */
+
+.task-editor-dialog .header-panel {
+    -fx-background-color: #f5f6f8;
+}
+
+.form-label {
+    -fx-font-weight: bold;
+    -fx-text-fill: -fx-color-text-muted;
+    -fx-font-size: 11.5px;
+}
+
+.form-grid {
+    -fx-padding: 4 0 4 0;
+}

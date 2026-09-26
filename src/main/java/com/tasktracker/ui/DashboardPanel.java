@@ -2,11 +2,13 @@ package com.tasktracker.ui;
 
 import com.tasktracker.service.TaskService;
 
+import javafx.animation.ScaleTransition;
 import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
+import javafx.util.Duration;
 
 /**
  * Read-only summary of the current task set. Kept deliberately small: total,
@@ -73,15 +75,38 @@ public class DashboardPanel extends VBox {
         int flagged = taskService.getFlaggedTasks().size();
         int overdue = taskService.getOverdueTasks().size();
 
-        totalValue.setText(String.valueOf(total));
-        pendingValue.setText(String.valueOf(pending));
-        completedValue.setText(String.valueOf(completed));
-        flaggedValue.setText(String.valueOf(flagged));
-        overdueValue.setText(String.valueOf(overdue));
+        setValue(totalValue, total);
+        setValue(pendingValue, pending);
+        setValue(completedValue, completed);
+        setValue(flaggedValue, flagged);
+        setValue(overdueValue, overdue);
 
         double ratio = total == 0 ? 0 : (double) completed / total;
 
         completionBar.setProgress(ratio);
         completionLabel.setText(Math.round(ratio * 100) + "% complete");
+    }
+
+    /**
+     * Updates a stat label's text and, only when the number actually
+     * changed, plays a small pulse so the dashboard visibly acknowledges the
+     * change instead of just silently swapping digits.
+     */
+    private void setValue(Label label, int newValue) {
+
+        String newText = String.valueOf(newValue);
+
+        if (newText.equals(label.getText())) {
+            return;
+        }
+
+        label.setText(newText);
+
+        ScaleTransition pulse = new ScaleTransition(Duration.millis(110), label);
+        pulse.setToX(1.18);
+        pulse.setToY(1.18);
+        pulse.setAutoReverse(true);
+        pulse.setCycleCount(2);
+        pulse.play();
     }
 }

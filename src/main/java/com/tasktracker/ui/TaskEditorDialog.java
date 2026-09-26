@@ -85,24 +85,25 @@ public class TaskEditorDialog {
         }
 
         GridPane detailsGrid = new GridPane();
-        detailsGrid.setHgap(16);
-        detailsGrid.setVgap(8);
+        detailsGrid.setHgap(20);
+        detailsGrid.setVgap(10);
+        detailsGrid.getStyleClass().add("form-grid");
 
-        detailsGrid.addRow(0, new Label("Priority"), priorityBox, flaggedCheckBox);
-        detailsGrid.addRow(1, new Label("Due date"), dueDatePicker, new Label("Reminder"), reminderDatePicker);
+        detailsGrid.addRow(0, formLabel("Priority"), priorityBox, flaggedCheckBox);
+        detailsGrid.addRow(1, formLabel("Due date"), dueDatePicker, formLabel("Reminder"), reminderDatePicker);
 
         VBox content = new VBox(
-                10,
-                new Label("Subject"),
+                14,
+                formLabel("Subject"),
                 subjectField,
-                new Label("Description"),
+                formLabel("Description"),
                 markdownEditor.getView(),
                 detailsGrid,
-                new Label("Tags"),
+                formLabel("Tags"),
                 tagsField
         );
 
-        content.setPadding(new Insets(10));
+        content.setPadding(new Insets(16));
         content.setPrefWidth(900);
         content.setPrefHeight(640);
 
@@ -170,6 +171,14 @@ public class TaskEditorDialog {
         }
 
         return tags;
+    }
+
+    private Label formLabel(String text) {
+
+        Label label = new Label(text);
+        label.getStyleClass().add("form-label");
+
+        return label;
     }
 
     private void showValidationError(String message) {
